@@ -1,0 +1,57 @@
+# For C
+
+# Prerequisites
+*.d
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+*.bin
+
+# Debug files
+*.dSYM/
+*.su
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# others
+*.crf
+*.axf
+*.lnp
+*.plg
+*.sct
+*.tra
+*.htm
+*.info_code
+*.info_elf
+*.info_size
+*.info_symbol
+*-.lst
+# VIM: Temperory files
+*~
+
+# VIM: Swap-files
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+
+# VIM: Commands :cs, :ctags
+tags
+cscope.*
+
+# VIM session
+Session.vim
+
+# VIM: netrw.vim: Network oriented reading, writing, browsing (eg: ftp scp) 
+.netrwhist
