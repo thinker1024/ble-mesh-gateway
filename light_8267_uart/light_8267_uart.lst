@@ -66,23 +66,23 @@ SYMBOL TABLE:
 00000128 l       .vectors	00000000 ASMEND
 00000000 l    df *ABS*	00000000 main_light.c
 00809d42 l     O .bss	00000001 a_irq_timer1.4353
-0000aac4 l     O .rodata	00000010 C.37.6274
+0000aac4 l     O .rodata	00000010 C.37.6273
 00809d54 l     O .bss	00000004 led_sel.4373
 00809d58 l     O .bss	00000001 enterTXIrq.4345
-0000aad4 l     O .rodata	00000010 C.38.6275
+0000aad4 l     O .rodata	00000010 C.33.6269
+0000aae4 l     O .rodata	00000010 C.38.6274
 00809d59 l     O .bss	00000001 enterRXIrq.4344
-0000aae4 l     O .rodata	00000010 C.35.6272
+0000aaf4 l     O .rodata	00000010 C.35.6271
 00809d68 l     O .bss	00000004 led_count.4370
 00809d70 l     O .bss	00000004 led_ton.4371
-0000aaf4 l     O .rodata	00000005 C.29.6253
+0000ab04 l     O .rodata	00000005 C.29.6252
 00809d74 l     O .bss	00000004 led_toff.4372
 00809d7c l     O .bss	00000004 led_is_on.4376
-0000abc8 l     O .rodata	00000010 C.39.6276
-0000abd8 l     O .rodata	00000010 C.36.6273
-0000abe8 l     O .rodata	00000010 C.33.6270
+0000abd8 l     O .rodata	00000010 C.39.6275
+0000abe8 l     O .rodata	00000010 C.36.6272
 00809d90 l     O .bss	00000004 dbg_m_loop.4557
 00809d98 l     O .bss	00000004 led_no.4375
-0000acb8 l     O .rodata	00000006 C.27.6251
+0000acb8 l     O .rodata	00000006 C.27.6250
 00809d9c l     O .bss	00000004 led_tick.4374
 00000000 l    df *ABS*	00000000 analog.c
 00000000 l    df *ABS*	00000000 clock.c
@@ -696,7 +696,7 @@ SYMBOL TABLE:
 00809e8c g     O .bss	00000004 rcv_pkt_time
 0000718c g     F .text	000009f2 rf_link_rc_data
 0080a404 g     O .bss	000006c0 buff_response
-0000aafc g     O .rodata	000000ca rgb_lumen_map
+0000ab0c g     O .rodata	000000ca rgb_lumen_map
 0080a100 g     O .bss	00000004 fp_gateway_tx_proc
 0080a218 g     O .bss	00000004 flash_adr_scene
 00009340 g     F .text	00000038 Bin2Text
@@ -2383,7 +2383,7 @@ get_pwm_cmp():
      cd0:	97ff 9ef4 	tjl	abc <__udivsi3>
      cd4:	6001      	tadd	sp, #4
      cd6:	6d30      	tpop	{r4, r5, pc}
-     cd8:	0000aafc 	undefined instruction 0x0000aafc
+     cd8:	0000ab0c 	tandeq	sl, r0, ip, lsl #22
 
 00000cdc <light_adjust_R>:
 light_adjust_R():
@@ -3785,20 +3785,20 @@ light_init_default():
     188c:	0080aff8 	undefined instruction 0x0080aff8
     1890:	0080ae14 	taddeq	sl, r0, r4, lsl lr
     1894:	0080013c 	taddeq	r0, r0, ip, lsr r1
-    1898:	0000aaf4 	undefined instruction 0x0000aaf4
+    1898:	0000ab04 	tandeq	sl, r0, r4, lsl #22
     189c:	00809700 	taddeq	r9, r0, r0, lsl #14
     18a0:	0080994c 	taddeq	r9, r0, ip, asr #18
     18a4:	006d6f74 	trsubeq	r6, sp, r4, ror pc
     18a8:	008097b4 	undefined instruction 0x008097b4
     18ac:	0000acc0 	tandeq	sl, r0, r0, asr #25
     18b0:	00809898 	umulleq	r9, r0, r8, r8
-    18b4:	0000abe8 	tandeq	sl, r0, r8, ror #23
+    18b4:	0000aad4 	undefined instruction 0x0000aad4
     18b8:	00809824 	taddeq	r9, r0, r4, lsr #16
-    18bc:	0000aae4 	tandeq	sl, r0, r4, ror #21
-    18c0:	0000abd8 	undefined instruction 0x0000abd8
+    18bc:	0000aaf4 	undefined instruction 0x0000aaf4
+    18c0:	0000abe8 	tandeq	sl, r0, r8, ror #23
     18c4:	0000aac4 	tandeq	sl, r0, r4, asr #21
-    18c8:	0000aad4 	undefined instruction 0x0000aad4
-    18cc:	0000abc8 	tandeq	sl, r0, r8, asr #23
+    18c8:	0000aae4 	tandeq	sl, r0, r4, ror #21
+    18cc:	0000abd8 	undefined instruction 0x0000abd8
     18d0:	00809430 	taddeq	r9, r0, r0, lsr r4
     18d4:	00809f4c 	taddeq	r9, r0, ip, asr #30
     18d8:	0080a1b9 	undefined instruction 0x0080a1b9
@@ -4126,16 +4126,16 @@ gateway_proc():
     1bb2:	ec28      	tadds	r0, r5, #0
     1bb4:	ec22      	tadds	r2, r4, #0
     1bb6:	9002 99cd 	tjl	3f54 <memcpy>
-    1bba:	ac06      	tcmp	r4, #6
+    1bba:	ac08      	tcmp	r4, #8
     1bbc:	c100      	tjne.n	1bc0 <gateway_proc+0x6c>
     1bbe:	81b7      	tj.n	1f30 <gateway_proc+0x3dc>
-    1bc0:	ac0a      	tcmp	r4, #10
+    1bc0:	ac0c      	tcmp	r4, #12
     1bc2:	c100      	tjne.n	1bc6 <gateway_proc+0x72>
     1bc4:	81cc      	tj.n	1f60 <gateway_proc+0x40c>
-    1bc6:	ac09      	tcmp	r4, #9
+    1bc6:	ac0b      	tcmp	r4, #11
     1bc8:	c100      	tjne.n	1bcc <gateway_proc+0x78>
     1bca:	81d6      	tj.n	1f7a <gateway_proc+0x426>
-    1bcc:	a10c      	tmovs	r1, #12
+    1bcc:	a10e      	tmovs	r1, #14
     1bce:	0249      	tnegs	r1, r1
     1bd0:	e909      	tadds	r1, r1, r4
     1bd2:	068a      	tmov	sl, r1
@@ -4143,16 +4143,16 @@ gateway_proc():
     1bd6:	0592      	tcmp	sl, r2
     1bd8:	c973      	tjls.n	1cc2 <gateway_proc+0x16e>
     1bda:	ec23      	tadds	r3, r4, #0
-    1bdc:	bb0b      	tsubs	r3, #11
+    1bdc:	bb0d      	tsubs	r3, #13
     1bde:	ab03      	tcmp	r3, #3
     1be0:	c800      	tjhi.n	1be4 <gateway_proc+0x90>
     1be2:	80c6      	tj.n	1d72 <gateway_proc+0x21e>
     1be4:	ec27      	tadds	r7, r4, #0
-    1be6:	bf0f      	tsubs	r7, #15
+    1be6:	bf11      	tsubs	r7, #17
     1be8:	af02      	tcmp	r7, #2
     1bea:	c800      	tjhi.n	1bee <gateway_proc+0x9a>
     1bec:	80dc      	tj.n	1da8 <gateway_proc+0x254>
-    1bee:	a10e      	tmovs	r1, #14
+    1bee:	a110      	tmovs	r1, #16
     1bf0:	0249      	tnegs	r1, r1
     1bf2:	e909      	tadds	r1, r1, r4
     1bf4:	0688      	tmov	r8, r1
@@ -4166,13 +4166,13 @@ gateway_proc():
     1c04:	0588      	tcmp	r8, r1
     1c06:	c800      	tjhi.n	1c0a <gateway_proc+0xb6>
     1c08:	8097      	tj.n	1d3a <gateway_proc+0x1e6>
-    1c0a:	ac0b      	tcmp	r4, #11
+    1c0a:	ac0d      	tcmp	r4, #13
     1c0c:	c100      	tjne.n	1c10 <gateway_proc+0xbc>
     1c0e:	82ff      	tj.n	2210 <gateway_proc+0x6bc>
-    1c10:	ac0a      	tcmp	r4, #10
+    1c10:	ac0c      	tcmp	r4, #12
     1c12:	c100      	tjne.n	1c16 <gateway_proc+0xc2>
     1c14:	833d      	tj.n	2292 <gateway_proc+0x73e>
-    1c16:	a30d      	tmovs	r3, #13
+    1c16:	a30f      	tmovs	r3, #15
     1c18:	025b      	tnegs	r3, r3
     1c1a:	e91b      	tadds	r3, r3, r4
     1c1c:	069b      	tmov	fp, r3
@@ -4184,7 +4184,7 @@ gateway_proc():
     1c28:	058a      	tcmp	sl, r1
     1c2a:	c800      	tjhi.n	1c2e <gateway_proc+0xda>
     1c2c:	8118      	tj.n	1e60 <gateway_proc+0x30c>
-    1c2e:	a110      	tmovs	r1, #16
+    1c2e:	a112      	tmovs	r1, #18
     1c30:	0249      	tnegs	r1, r1
     1c32:	e909      	tadds	r1, r1, r4
     1c34:	0689      	tmov	r9, r1
@@ -4207,7 +4207,7 @@ gateway_proc():
     1c56:	c800      	tjhi.n	1c5a <gateway_proc+0x106>
     1c58:	8289      	tj.n	216e <gateway_proc+0x61a>
     1c5a:	ec23      	tadds	r3, r4, #0
-    1c5c:	bb12      	tsubs	r3, #18
+    1c5c:	bb14      	tsubs	r3, #20
     1c5e:	ab06      	tcmp	r3, #6
     1c60:	c800      	tjhi.n	1c64 <gateway_proc+0x110>
     1c62:	829a      	tj.n	219a <gateway_proc+0x646>
@@ -4215,12 +4215,12 @@ gateway_proc():
     1c66:	c800      	tjhi.n	1c6a <gateway_proc+0x116>
     1c68:	82e1      	tj.n	222e <gateway_proc+0x6da>
     1c6a:	ec23      	tadds	r3, r4, #0
-    1c6c:	bb11      	tsubs	r3, #17
+    1c6c:	bb13      	tsubs	r3, #19
     1c6e:	ab0a      	tcmp	r3, #10
     1c70:	c800      	tjhi.n	1c74 <gateway_proc+0x120>
     1c72:	8363      	tj.n	233c <gateway_proc+0x7e8>
     1c74:	ec23      	tadds	r3, r4, #0
-    1c76:	bb15      	tsubs	r3, #21
+    1c76:	bb17      	tsubs	r3, #23
     1c78:	ab0f      	tcmp	r3, #15
     1c7a:	c800      	tjhi.n	1c7e <gateway_proc+0x12a>
     1c7c:	839e      	tj.n	23bc <gateway_proc+0x868>
@@ -4240,7 +4240,7 @@ gateway_proc():
     1c98:	059b      	tcmp	fp, r3
     1c9a:	c800      	tjhi.n	1c9e <gateway_proc+0x14a>
     1c9c:	83da      	tj.n	2454 <gateway_proc+0x900>
-    1c9e:	ac0d      	tcmp	r4, #13
+    1c9e:	ac0f      	tcmp	r4, #15
     1ca0:	c101      	tjne.n	1ca6 <gateway_proc+0x152>
     1ca2:	9000 9cb5 	tjl	2610 <gateway_proc+0xabc>
     1ca6:	ac00      	tcmp	r4, #0
@@ -4526,11 +4526,11 @@ gateway_proc():
     1f4a:	a308      	tmovs	r3, #8
     1f4c:	0259      	tnegs	r1, r3
     1f4e:	0688      	tmov	r8, r1
-    1f50:	a20d      	tmovs	r2, #13
+    1f50:	a20f      	tmovs	r2, #15
     1f52:	0252      	tnegs	r2, r2
     1f54:	e912      	tadds	r2, r2, r4
     1f56:	0693      	tmov	fp, r2
-    1f58:	bb18      	tsubs	r3, #24
+    1f58:	bb1a      	tsubs	r3, #26
     1f5a:	e91b      	tadds	r3, r3, r4
     1f5c:	0699      	tmov	r9, r3
     1f5e:	8671      	tj.n	1c44 <gateway_proc+0xf0>
@@ -4541,7 +4541,7 @@ gateway_proc():
     1f6a:	ee07      	tsubs	r7, r0, #0
     1f6c:	c100      	tjne.n	1f70 <gateway_proc+0x41c>
     1f6e:	809d      	tj.n	20ac <gateway_proc+0x558>
-    1f70:	a20c      	tmovs	r2, #12
+    1f70:	a20e      	tmovs	r2, #14
     1f72:	0252      	tnegs	r2, r2
     1f74:	e912      	tadds	r2, r2, r4
     1f76:	0692      	tmov	sl, r2
@@ -4799,7 +4799,7 @@ gateway_proc():
     21b8:	8554      	tj.n	1c64 <gateway_proc+0x110>
     21ba:	0855      	tloadr	r0, [pc, #340]	; (2310 <gateway_proc+0x7bc>)
     21bc:	9001 9c2e 	tjl	3a1c <uart_print>
-    21c0:	a211      	tmovs	r2, #17
+    21c0:	a213      	tmovs	r2, #19
     21c2:	0252      	tnegs	r2, r2
     21c4:	e912      	tadds	r2, r2, r4
     21c6:	0692      	tmov	sl, r2
@@ -4844,7 +4844,7 @@ gateway_proc():
     221e:	0589      	tcmp	r9, r1
     2220:	c100      	tjne.n	2224 <gateway_proc+0x6d0>
     2222:	816d      	tj.n	2500 <gateway_proc+0x9ac>
-    2224:	a30d      	tmovs	r3, #13
+    2224:	a30f      	tmovs	r3, #15
     2226:	025b      	tnegs	r3, r3
     2228:	e91b      	tadds	r3, r3, r4
     222a:	069b      	tmov	fp, r3
@@ -5021,7 +5021,7 @@ gateway_proc():
     23e4:	068b      	tmov	fp, r1
     23e6:	a304      	tmovs	r3, #4
     23e8:	400b      	tstorerb	r3, [r1, #0]
-    23ea:	a214      	tmovs	r2, #20
+    23ea:	a216      	tmovs	r2, #22
     23ec:	0252      	tnegs	r2, r2
     23ee:	e912      	tadds	r2, r2, r4
     23f0:	0692      	tmov	sl, r2
@@ -5094,7 +5094,7 @@ gateway_proc():
     2482:	97ff 9b86 	tjl	1b92 <gateway_proc+0x3e>
     2486:	0897      	tloadr	r0, [pc, #604]	; (26e4 <gateway_proc+0xb90>)
     2488:	9001 9ac8 	tjl	3a1c <uart_print>
-    248c:	a211      	tmovs	r2, #17
+    248c:	a213      	tmovs	r2, #19
     248e:	0252      	tnegs	r2, r2
     2490:	e912      	tadds	r2, r2, r4
     2492:	0692      	tmov	sl, r2
@@ -5176,7 +5176,7 @@ gateway_proc():
     2542:	a304      	tmovs	r3, #4
     2544:	0659      	tmov	r1, fp
     2546:	400b      	tstorerb	r3, [r1, #0]
-    2548:	a214      	tmovs	r2, #20
+    2548:	a216      	tmovs	r2, #22
     254a:	0252      	tnegs	r2, r2
     254c:	e912      	tadds	r2, r2, r4
     254e:	0692      	tmov	sl, r2
@@ -5713,7 +5713,7 @@ light_step_correct_mod():
     29dc:	87e9      	tj.n	29b2 <light_step_correct_mod+0x56>
     29de:	46c0      	tnop			; (mov r8, r8)
     29e0:	00809dd4 	undefined instruction 0x00809dd4
-    29e4:	0000aafc 	undefined instruction 0x0000aafc
+    29e4:	0000ab0c 	tandeq	sl, r0, ip, lsl #22
     29e8:	0000ffff 	undefined instruction 0x0000ffff
 
 000029ec <light_onoff_step_init>:
@@ -21160,98 +21160,98 @@ aes_att_decryption_packet():
 
 Disassembly of section .rodata:
 
-0000aac4 <C.37.6274>:
+0000aac4 <C.37.6273>:
     aac4:	0c0d1912 	undefined instruction 0x0c0d1912
     aac8:	08090a0b 	tstormmdaeq	r9, {r0, r1, r3, r9, fp}
     aacc:	04050607 	tstorereq	r0, [r5], #-1543	; 0x607
     aad0:	00010203 	tandeq	r0, r1, r3, lsl #4
 
-0000aad4 <C.38.6275>:
-    aad4:	0c0d1913 	undefined instruction 0x0c0d1913
-    aad8:	08090a0b 	tstormmdaeq	r9, {r0, r1, r3, r9, fp}
-    aadc:	04050607 	tstorereq	r0, [r5], #-1543	; 0x607
-    aae0:	00010203 	tandeq	r0, r1, r3, lsl #4
+0000aad4 <C.33.6269>:
+    aad4:	c3c2c1c0 	tbclrgt	ip, r2, #48	; 0x30
+    aad8:	c7c6c5c4 	tstorerbgt	ip, [r6, r4, asr #11]
+    aadc:	dbdad9d8 	tjlle	ff6c1244 <BUILD_VERSION+0xc73de0ee>
+    aae0:	dfdedddc 	tservle	0x00dedddc
 
-0000aae4 <C.35.6272>:
-    aae4:	0c0d1910 	undefined instruction 0x0c0d1910
+0000aae4 <C.38.6274>:
+    aae4:	0c0d1913 	undefined instruction 0x0c0d1913
     aae8:	08090a0b 	tstormmdaeq	r9, {r0, r1, r3, r9, fp}
     aaec:	04050607 	tstorereq	r0, [r5], #-1543	; 0x607
     aaf0:	00010203 	tandeq	r0, r1, r3, lsl #4
 
-0000aaf4 <C.29.6253>:
-    aaf4:	53454e49 	tcmppl	r5, #1168	; 0x490
-    aaf8:	00000041 	tandeq	r0, r0, r1, asr #32
+0000aaf4 <C.35.6271>:
+    aaf4:	0c0d1910 	undefined instruction 0x0c0d1910
+    aaf8:	08090a0b 	tstormmdaeq	r9, {r0, r1, r3, r9, fp}
+    aafc:	04050607 	tstorereq	r0, [r5], #-1543	; 0x607
+    ab00:	00010203 	tandeq	r0, r1, r3, lsl #4
 
-0000aafc <rgb_lumen_map>:
-    aafc:	00050000 	tandeq	r0, r5, r0
-    ab00:	00820032 	taddeq	r0, r2, r2, lsr r0
-    ab04:	02000100 	tandeq	r0, r0, #0
-    ab08:	04000300 	tstorereq	r0, [r0], #-768	; 0x300
-    ab0c:	06000500 	tstorereq	r0, [r0], -r0, lsl #10
-    ab10:	08000700 	tstormmdaeq	r0, {r8, r9, sl}
-    ab14:	0a000900 	tjeq	cf1c <_bin_size_+0x1630>
-    ab18:	0c000b00 	undefined instruction 0x0c000b00
-    ab1c:	0e000d00 	undefined instruction 0x0e000d00
-    ab20:	10000f00 	tandne	r0, r0, r0, lsl #30
-    ab24:	12001100 	tandne	r1, r0, #0
-    ab28:	15001300 	tstorerne	r1, [r0, #-768]	; 0x300
-    ab2c:	19001700 	tstormmdbne	r0, {r8, r9, sl, ip}
-    ab30:	1d001b00 	undefined instruction 0x1d001b00
-    ab34:	21001f00 	tnandcs	r0, r0, lsl #30
-    ab38:	25002300 	tstorercs	r2, [r0, #-768]	; 0x300
-    ab3c:	29002700 	tstormmdbcs	r0, {r8, r9, sl, sp}
-    ab40:	2d002b00 	undefined instruction 0x2d002b00
-    ab44:	31002f00 	tnandcc	r0, r0, lsl #30
-    ab48:	35003300 	tstorercc	r3, [r0, #-768]	; 0x300
-    ab4c:	39003700 	tstormmdbcc	r0, {r8, r9, sl, ip, sp}
-    ab50:	3d003b00 	undefined instruction 0x3d003b00
-    ab54:	41003f00 	tnandmi	r0, r0, lsl #30
-    ab58:	45004300 	tstorermi	r4, [r0, #-768]	; 0x300
-    ab5c:	49004700 	tstormmdbmi	r0, {r8, r9, sl, lr}
-    ab60:	4e004b00 	undefined instruction 0x4e004b00
-    ab64:	54005100 	tstorerpl	r5, [r0], #-256	; 0x100
-    ab68:	5a005700 	tjpl	20770 <_bin_size_+0x14e84>
-    ab6c:	60005d00 	tandvs	r5, r0, r0, lsl #26
-    ab70:	66006300 	tstorervs	r6, [r0], -r0, lsl #6
-    ab74:	6c006900 	undefined instruction 0x6c006900
-    ab78:	72006f00 	tandvc	r6, r0, #0
-    ab7c:	78007500 	tstormmdavc	r0, {r8, sl, ip, sp, lr}
-    ab80:	7e007b00 	undefined instruction 0x7e007b00
-    ab84:	84008100 	tstorerhi	r8, [r0], #-256	; 0x100
-    ab88:	8a008700 	tjhi	2c790 <_bin_size_+0x20ea4>
-    ab8c:	90008d00 	tandls	r8, r0, r0, lsl #26
-    ab90:	96009300 	tstorerls	r9, [r0], -r0, lsl #6
-    ab94:	9e009a00 	undefined instruction 0x9e009a00
-    ab98:	a600a200 	tstorerge	sl, [r0], -r0, lsl #4
-    ab9c:	ae00aa00 	undefined instruction 0xae00aa00
-    aba0:	b600b200 	tstorerlt	fp, [r0], -r0, lsl #4
-    aba4:	be00ba00 	undefined instruction 0xbe00ba00
-    aba8:	c600c200 	tstorergt	ip, [r0], -r0, lsl #4
-    abac:	ce00ca00 	undefined instruction 0xce00ca00
-    abb0:	d600d200 	tstorerle	sp, [r0], -r0, lsl #4
-    abb4:	de00da00 	undefined instruction 0xde00da00
-    abb8:	e600e200 	tstorer	lr, [r0], -r0, lsl #4
-    abbc:	f000eb00 	undefined instruction 0xf000eb00
-    abc0:	fa00f500 	tjlex	47fc8 <_bin_size_+0x3c6dc>
-    abc4:	0000ff00 	tandeq	pc, r0, r0, lsl #30
+0000ab04 <C.29.6252>:
+    ab04:	53454e49 	tcmppl	r5, #1168	; 0x490
+    ab08:	00000041 	tandeq	r0, r0, r1, asr #32
 
-0000abc8 <C.39.6276>:
-    abc8:	0c0d1914 	undefined instruction 0x0c0d1914
-    abcc:	08090a0b 	tstormmdaeq	r9, {r0, r1, r3, r9, fp}
-    abd0:	04050607 	tstorereq	r0, [r5], #-1543	; 0x607
-    abd4:	00010203 	tandeq	r0, r1, r3, lsl #4
+0000ab0c <rgb_lumen_map>:
+    ab0c:	00050000 	tandeq	r0, r5, r0
+    ab10:	00820032 	taddeq	r0, r2, r2, lsr r0
+    ab14:	02000100 	tandeq	r0, r0, #0
+    ab18:	04000300 	tstorereq	r0, [r0], #-768	; 0x300
+    ab1c:	06000500 	tstorereq	r0, [r0], -r0, lsl #10
+    ab20:	08000700 	tstormmdaeq	r0, {r8, r9, sl}
+    ab24:	0a000900 	tjeq	cf2c <_bin_size_+0x1640>
+    ab28:	0c000b00 	undefined instruction 0x0c000b00
+    ab2c:	0e000d00 	undefined instruction 0x0e000d00
+    ab30:	10000f00 	tandne	r0, r0, r0, lsl #30
+    ab34:	12001100 	tandne	r1, r0, #0
+    ab38:	15001300 	tstorerne	r1, [r0, #-768]	; 0x300
+    ab3c:	19001700 	tstormmdbne	r0, {r8, r9, sl, ip}
+    ab40:	1d001b00 	undefined instruction 0x1d001b00
+    ab44:	21001f00 	tnandcs	r0, r0, lsl #30
+    ab48:	25002300 	tstorercs	r2, [r0, #-768]	; 0x300
+    ab4c:	29002700 	tstormmdbcs	r0, {r8, r9, sl, sp}
+    ab50:	2d002b00 	undefined instruction 0x2d002b00
+    ab54:	31002f00 	tnandcc	r0, r0, lsl #30
+    ab58:	35003300 	tstorercc	r3, [r0, #-768]	; 0x300
+    ab5c:	39003700 	tstormmdbcc	r0, {r8, r9, sl, ip, sp}
+    ab60:	3d003b00 	undefined instruction 0x3d003b00
+    ab64:	41003f00 	tnandmi	r0, r0, lsl #30
+    ab68:	45004300 	tstorermi	r4, [r0, #-768]	; 0x300
+    ab6c:	49004700 	tstormmdbmi	r0, {r8, r9, sl, lr}
+    ab70:	4e004b00 	undefined instruction 0x4e004b00
+    ab74:	54005100 	tstorerpl	r5, [r0], #-256	; 0x100
+    ab78:	5a005700 	tjpl	20780 <_bin_size_+0x14e94>
+    ab7c:	60005d00 	tandvs	r5, r0, r0, lsl #26
+    ab80:	66006300 	tstorervs	r6, [r0], -r0, lsl #6
+    ab84:	6c006900 	undefined instruction 0x6c006900
+    ab88:	72006f00 	tandvc	r6, r0, #0
+    ab8c:	78007500 	tstormmdavc	r0, {r8, sl, ip, sp, lr}
+    ab90:	7e007b00 	undefined instruction 0x7e007b00
+    ab94:	84008100 	tstorerhi	r8, [r0], #-256	; 0x100
+    ab98:	8a008700 	tjhi	2c7a0 <_bin_size_+0x20eb4>
+    ab9c:	90008d00 	tandls	r8, r0, r0, lsl #26
+    aba0:	96009300 	tstorerls	r9, [r0], -r0, lsl #6
+    aba4:	9e009a00 	undefined instruction 0x9e009a00
+    aba8:	a600a200 	tstorerge	sl, [r0], -r0, lsl #4
+    abac:	ae00aa00 	undefined instruction 0xae00aa00
+    abb0:	b600b200 	tstorerlt	fp, [r0], -r0, lsl #4
+    abb4:	be00ba00 	undefined instruction 0xbe00ba00
+    abb8:	c600c200 	tstorergt	ip, [r0], -r0, lsl #4
+    abbc:	ce00ca00 	undefined instruction 0xce00ca00
+    abc0:	d600d200 	tstorerle	sp, [r0], -r0, lsl #4
+    abc4:	de00da00 	undefined instruction 0xde00da00
+    abc8:	e600e200 	tstorer	lr, [r0], -r0, lsl #4
+    abcc:	f000eb00 	undefined instruction 0xf000eb00
+    abd0:	fa00f500 	tjlex	47fd8 <_bin_size_+0x3c6ec>
+    abd4:	0000ff00 	tandeq	pc, r0, r0, lsl #30
 
-0000abd8 <C.36.6273>:
-    abd8:	0c0d1911 	undefined instruction 0x0c0d1911
+0000abd8 <C.39.6275>:
+    abd8:	0c0d1914 	undefined instruction 0x0c0d1914
     abdc:	08090a0b 	tstormmdaeq	r9, {r0, r1, r3, r9, fp}
     abe0:	04050607 	tstorereq	r0, [r5], #-1543	; 0x607
     abe4:	00010203 	tandeq	r0, r1, r3, lsl #4
 
-0000abe8 <C.33.6270>:
-    abe8:	c3c2c1c0 	tbclrgt	ip, r2, #48	; 0x30
-    abec:	c7c6c5c4 	tstorerbgt	ip, [r6, r4, asr #11]
-    abf0:	dbdad9d8 	tjlle	ff6c1358 <BUILD_VERSION+0xc73de202>
-    abf4:	dfdedddc 	tservle	0x00dedddc
+0000abe8 <C.36.6272>:
+    abe8:	0c0d1911 	undefined instruction 0x0c0d1911
+    abec:	08090a0b 	tstormmdaeq	r9, {r0, r1, r3, r9, fp}
+    abf0:	04050607 	tstorereq	r0, [r5], #-1543	; 0x607
+    abf4:	00010203 	tandeq	r0, r1, r3, lsl #4
 
 0000abf8 <rgb_map>:
     abf8:	0880ff04 	tstoremeq	r0, {r2, r8, r9, sl, fp, ip, sp, lr, pc}
@@ -21303,7 +21303,7 @@ Disassembly of section .rodata:
     acb0:	08fc740c 	tloadmeq	ip!, {r2, r3, sl, ip, sp, lr}^
     acb4:	7c04ff78 	undefined instruction 0x7c04ff78
 
-0000acb8 <C.27.6251>:
+0000acb8 <C.27.6250>:
     acb8:	00190205 	tandseq	r0, r9, r5, lsl #4
     acbc:	00006969 	tandeq	r6, r0, r9, ror #18
     acc0:	33323131 	teqcc	r2, #1073741836	; 0x4000000c
@@ -21406,7 +21406,7 @@ Disassembly of section .rodata:
     ae44:	412b5442 	teqmi	fp, r2, asr #8
     ae48:	00474444 	tsubeq	r4, r7, r4, asr #8
     ae4c:	20444441 	tsubcs	r4, r4, r1, asr #8
-    ae50:	756f7267 	tstorerbvc	r7, [pc, #-615]!	; abf1 <C.33.6270+0x9>
+    ae50:	756f7267 	tstorerbvc	r7, [pc, #-615]!	; abf1 <C.36.6272+0x9>
     ae54:	6b6f2c70 	tjlvs	1bd601c <_end_bss_+0x13caecc>
     ae58:	00000a0d 	tandeq	r0, r0, sp, lsl #20
     ae5c:	204c4544 	tsubcs	r4, ip, r4, asr #10

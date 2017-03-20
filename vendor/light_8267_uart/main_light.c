@@ -144,6 +144,8 @@ extern void	rf_link_slave_pairing_enable(int en);
 extern void	rf_link_slave_set_buffer (u32 *p, u8 n);
 extern int rf_link_get_op_para(u8 *p, u8 *op, u8 *op_len, u8 *para, u8 *para_len, u8 mesh_flag);
 
+//u32 gateway_proc(void);
+
 void	pwm_set_lum (int id, u16 y, int pol)
 {
     u32 lum = ((u32)y * PMW_MAX_TICK) / (255*256);
@@ -1292,6 +1294,7 @@ void main_loop(void)
 	proc_led ();
 #if GATEWAY_EN
     proc_ui_gateway ();
+//    gateway_proc();
 #endif    
 
 #if(STACK_CHECK_ENABLE)
@@ -1304,6 +1307,8 @@ void main_loop(void)
 	printf ("main loop: %d\r\n", dbg_m_loop);
 	sleep_us (100000);
 #endif
+//	sleep_us (100000);
+//	uart_print("color life!\r\n");
 
 #if DEUBG_UART_HEX_EN
 	USBUART (dbg_m_loop>>24);
@@ -1464,11 +1469,6 @@ void gateway_cmd_send(u8 cmd, u8 *par, int dst)
 	 gatway_tx_command(cmd, dst, par, sizeof(par), ATT_OP_WRITE_REQ);
 }
 
-//void gateway_cmd_handle_8267(void)
-//{
-//
-//
-//}
 
 void online_cmd_encode(void)
 {
@@ -1486,7 +1486,6 @@ void online_cmd_encode(void)
 	buff_command[9] = 0x00;
 	buff_command[10] = 0x01;
 }
-
 
 u32 gateway_proc(void)
 {
@@ -1510,27 +1509,27 @@ u32 gateway_proc(void)
 		memcpy(&T_rxdata_user, &T_rxdata_buf, n);
 		extern u8 buff_command[64];
 
-		if((n == 6) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT", 2))){
+		if((n == 8) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT", 2))){
 		    uart_print("ok\r\n");
 		}
-		else if((n == 10) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+OFF", 6))){
+		else if((n == 12) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+OFF", 6))){
         	uart_print("OFF,ok\r\n");
         	ex_param[0] = 0;
         	gateway_cmd_send(LGT_CMD_LIGHT_ONOFF, ex_param, 0xFFFF);
         }
-		else if((n == 9) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+ON", 5))){
+		else if((n == 11) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+ON", 5))){
 		    uart_print("ON,ok\r\n");
 		    ex_param[0] = 0x01;
 		    gateway_cmd_send(LGT_CMD_LIGHT_ONOFF, ex_param, 0xFFFF);
 		}
-		else if((n > 11) && ( n <16) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+OFFD", 7))){
+		else if((n > 13) && ( n <18) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+OFFD", 7))){
         	uart_print("OFF delay,ok\r\n");
         	xdata = atoi(((char *)T_rxdata_user.data) + 7);
         	ex_param[1] = xdata & 0x00ff;
         	ex_param[2] = (xdata & 0xff00) >> 8;
         	gateway_cmd_send(LGT_CMD_LIGHT_ONOFF, ex_param, 0xFFFF);
         }
-		else if(n > 10 && n < 15 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+OND", 6))){
+		else if(n > 12 && n < 17 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+OND", 6))){
         	uart_print("ON delay,ok\r\n");
         	ex_param[0] = 0x01;
         	xdata = atoi(((char *)T_rxdata_user.data) + 6);
@@ -1538,7 +1537,7 @@ u32 gateway_proc(void)
         	ex_param[2] = (xdata & 0xff00) >> 8;
         	gateway_cmd_send(LGT_CMD_LIGHT_ONOFF, ex_param, 0xFFFF);
         }
-		else if((n > 14 && n < 18) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+OFF+LID", 10))){
+		else if((n > 16 && n < 20) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+OFF+LID", 10))){
         	xdata = atoi(((char *)T_rxdata_user.data) + 10);
         	if(xdata >= 0 && xdata <=255){
             	uart_print("OFF,ok\r\n");
@@ -1546,7 +1545,7 @@ u32 gateway_proc(void)
             	gateway_cmd_send(LGT_CMD_LIGHT_ONOFF, ex_param, xdata);
         	}
         }
-		else if((n > 13 && n < 17) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+ON+LID", 9))){
+		else if((n > 15 && n < 19) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+ON+LID", 9))){
         	xdata = atoi(((char *)T_rxdata_user.data) + 9);
         	if(xdata >= 0 && xdata <=255){
             	uart_print("ON,ok\r\n");
@@ -1554,7 +1553,7 @@ u32 gateway_proc(void)
             	gateway_cmd_send(LGT_CMD_LIGHT_ONOFF, ex_param, xdata);
         	}
         }
-		else if((n > 14 && n < 18) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+OFF+GID", 10))){
+		else if((n > 16 && n < 20) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+OFF+GID", 10))){
 		    xdata = atoi(((char *)T_rxdata_user.data) + 10) + 0x8000;
 		    if(xdata >= 0x8000 && xdata <= 0x83e7){
 		        uart_print("OFF,ok\r\n");
@@ -1562,7 +1561,7 @@ u32 gateway_proc(void)
 		        gateway_cmd_send(LGT_CMD_LIGHT_ONOFF, ex_param, xdata);
 		    }
 	    }
-		else if((n > 13 && n < 17) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+ON+GID", 9))){
+		else if((n > 15 && n < 19) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+ON+GID", 9))){
         	xdata = atoi(((char *)T_rxdata_user.data) + 9) + 0x8000;
         	if(xdata >= 0x8000 && xdata <= 0xFFFE){
             	uart_print("ON,ok\r\n");
@@ -1570,17 +1569,17 @@ u32 gateway_proc(void)
             	gateway_cmd_send(LGT_CMD_LIGHT_ONOFF, ex_param, xdata);
         	}
         }
-		else if((n == 11) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+WOFF", 7))){
+		else if((n == 13) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+WOFF", 7))){
         	uart_print("OFF,ok\r\n");
         	ex_param[0] = 0;
         	gateway_cmd_send(LGT_CMD_LIGHT_W, ex_param, 0xFFFF);
         }
-		else if((n == 10) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+WON", 6))){
+		else if((n == 12) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+WON", 6))){
         	uart_print("ON,ok\r\n");
         	ex_param[0] = 1;
         	gateway_cmd_send(LGT_CMD_LIGHT_W, ex_param, 0xFFFF);
         }
-		else if((n > 12) && (n < 17) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+WOFFD", 8))){
+		else if((n > 14) && (n < 19) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+WOFFD", 8))){
         	uart_print("OFF delay,ok\r\n");
         	xdata = atoi(((char *)T_rxdata_user.data) + 8);
         	ex_param[0] = 0x00;
@@ -1588,7 +1587,7 @@ u32 gateway_proc(void)
         	ex_param[2] = (xdata & 0xff00) >> 8;
         	gateway_cmd_send(LGT_CMD_LIGHT_W, ex_param, 0xFFFF);
         }
-		else if(n > 11 && n < 16 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+WOND", 7))){
+		else if(n > 13 && n < 18 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+WOND", 7))){
         	uart_print("ON delay,ok\r\n");
         	ex_param[0] = 0x01;
         	xdata = atoi(((char *)T_rxdata_user.data) + 7);
@@ -1596,7 +1595,7 @@ u32 gateway_proc(void)
         	ex_param[2] = (xdata & 0xff00) >> 8;
         	gateway_cmd_send(LGT_CMD_LIGHT_W, ex_param, 0xFFFF);
         }
-		else if((n > 15 && n < 19) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+WOFF+LID", 11))){
+		else if((n > 17 && n < 21) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+WOFF+LID", 11))){
         	xdata = atoi(((char *)T_rxdata_user.data) + 11);
         	if(xdata >= 0 && xdata <=255){
             	uart_print("OFF,ok\r\n");
@@ -1604,7 +1603,7 @@ u32 gateway_proc(void)
             	gateway_cmd_send(LGT_CMD_LIGHT_W, ex_param, xdata);
         	}
         }
-		else if((n > 14 && n < 18) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+WON+LID", 10))){
+		else if((n > 16 && n < 20) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+WON+LID", 10))){
         	xdata = atoi(((char *)T_rxdata_user.data) + 10);
         	if(xdata >= 0 && xdata <=255){
             	uart_print("ON,ok\r\n");
@@ -1612,7 +1611,7 @@ u32 gateway_proc(void)
             	gateway_cmd_send(LGT_CMD_LIGHT_W, ex_param, xdata);
         	}
         }
-		else if((n > 15 && n < 19) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+WOFF+GID", 11))){
+		else if((n > 17 && n < 21) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+WOFF+GID", 11))){
         	xdata = atoi(((char *)T_rxdata_user.data) + 11) + 0x8000;
         	if(xdata >= 0x8000 && xdata <= 0x83e7){
             	uart_print("OFF,ok\r\n");
@@ -1620,7 +1619,7 @@ u32 gateway_proc(void)
             	gateway_cmd_send(LGT_CMD_LIGHT_W, ex_param, xdata);
         	}
         }
-		else if((n > 14 && n < 18) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+WON+GID", 10))){
+		else if((n > 16 && n < 20) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+WON+GID", 10))){
         	xdata = atoi(((char *)T_rxdata_user.data) + 10) + 0x8000;
         	if(xdata >= 0x8000 && xdata <= 0xFFFE){
             	uart_print("ON,ok\r\n");
@@ -1628,14 +1627,14 @@ u32 gateway_proc(void)
             	gateway_cmd_send(LGT_CMD_LIGHT_W, ex_param, xdata);
         	}
         }
-		else if(n > 13 && n < 17 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+SETLUM", 9))){
+		else if(n > 15 && n < 19 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+SETLUM", 9))){
         	uart_print("SET lum,ok\r\n");
         	ex_param[0] = atoi((char *)T_rxdata_user.data + 9);
         	gateway_cmd_send(LGT_CMD_LIGHT_SET, ex_param, 0xFFFF);
         }
-		else if(n > 17 && n < 25 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+LID+SETLUM", 13))){
+		else if(n > 19 && n < 27 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+LID+SETLUM", 13))){
         	uart_print("SET lum,ok\r\n");
-        	for(int i=0;i<(n-17);i++)
+        	for(int i=0;i<(n-19);i++)
         	{
         		if(T_rxdata_user.data[13+i] == ','){
         			LightID = atoi(lid);
@@ -1648,9 +1647,9 @@ u32 gateway_proc(void)
         	printf(">>>%d\r\n", ex_param[0]);
         	gateway_cmd_send(LGT_CMD_LIGHT_SET, ex_param, LightID);
         }
-		else if(n > 17 && n < 25 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+GID+SETLUM", 13))){
+		else if(n > 19 && n < 27 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+GID+SETLUM", 13))){
         	uart_print("SET lum,ok\r\n");
-        	for(int i=0;i<(n-17);i++)
+        	for(int i=0;i<(n-19);i++)
         	{
         		if(T_rxdata_user.data[13+i] == ','){
         			GroupID = atoi(lid) + 0x8000;
@@ -1663,38 +1662,38 @@ u32 gateway_proc(void)
         	printf(">>>%d\r\n", ex_param[0]);
         	gateway_cmd_send(LGT_CMD_LIGHT_SET, ex_param, GroupID);
         }
-		else if(n > 14 && n < 18 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+SETRLUM", 10))){
+		else if(n > 16 && n < 20 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+SETRLUM", 10))){
         	uart_print("SET red lum,ok\r\n");
         	ex_param[1] = atoi((char *)T_rxdata_user.data + 10);
         	ex_param[0] = 0x01;
         	gateway_cmd_send(LGT_CMD_SET_RGB_VALUE, ex_param, 0xFFFF);
         }
-		else if(n > 14 && n < 18 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+SETGLUM", 10))){
+		else if(n > 16 && n < 20 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+SETGLUM", 10))){
         	uart_print("SET red lum,ok\r\n");
         	ex_param[1] = atoi((char *)T_rxdata_user.data + 10);
         	ex_param[0] = 0x02;
         	gateway_cmd_send(LGT_CMD_SET_RGB_VALUE, ex_param, 0xFFFF);
         }
-		else if(n > 14 && n < 18 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+SETBLUM", 10))){
+		else if(n > 16 && n < 20 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+SETBLUM", 10))){
         	uart_print("SET red lum,ok\r\n");
         	ex_param[1] = atoi((char *)T_rxdata_user.data + 10);
         	ex_param[0] = 0x03;
         	gateway_cmd_send(LGT_CMD_SET_RGB_VALUE, ex_param, 0xFFFF);
         }
-		else if(n > 14 && n < 18 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+SETWLUM", 10))){
+		else if(n > 16 && n < 20 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+SETWLUM", 10))){
         	uart_print("SET white lum,ok\r\n");
         	ex_param[0] = 0x01;
         	ex_param[3] = 1;
         	ex_param[4] = atoi((char *)T_rxdata_user.data + 10);
         	gateway_cmd_send(LGT_CMD_LIGHT_W, ex_param, 0xFFFF);
         }
-		else if(n > 16 && n < 28 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+SETRGBLUM", 12))){
+		else if(n > 18 && n < 30 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+SETRGBLUM", 12))){
         	uart_print("SET RGB lum,ok\r\n");
         	ex_param[0] = 0x04;
         	u8 count = 0;
         	u8 len_r = 0;
         	u8 len_rg = 0;
-        	for(int i=0;i<(n-16);i++)
+        	for(int i=0;i<(n-18);i++)
         	{
         		if(T_rxdata_user.data[12+i] == ','){
         			count = count + 1;
@@ -1712,14 +1711,14 @@ u32 gateway_proc(void)
         	ex_param[3] = atoi(rgb + 1 + len_rg);
         	gateway_cmd_send(LGT_CMD_SET_RGB_VALUE, ex_param, 0xFFFF);
         }
-		else if(n > 20 && n < 37 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+LID+SETRGBLUM", 16))){
+		else if(n > 22 && n < 39 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+LID+SETRGBLUM", 16))){
         	uart_print("SET RGB lum,ok\r\n");
         	ex_param[0] = 0x04;
         	u8 count = 0;
         	u8 len_r = 0;
         	u8 len_rg = 0;
         	u8 len_rgb = 0;
-        	for(int i=0;i<(n-20);i++)
+        	for(int i=0;i<(n-22);i++)
         	{
         		if(T_rxdata_user.data[16+i] == ','){
         			count = count + 1;
@@ -1741,14 +1740,14 @@ u32 gateway_proc(void)
         	xdata = atoi(rgb + len_rgb + 1);
         	gateway_cmd_send(LGT_CMD_SET_RGB_VALUE, ex_param, xdata);
         }
-		else if(n > 20 && n < 37 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+GID+SETRGBLUM", 16))){
+		else if(n > 22 && n < 39 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+GID+SETRGBLUM", 16))){
         	uart_print("SET RGB lum,ok\r\n");
         	ex_param[0] = 0x04;
         	u8 count = 0;
         	u8 len_r = 0;
         	u8 len_rg = 0;
         	u8 len_rgb = 0;
-        	for(int i=0;i<(n-20);i++)
+        	for(int i=0;i<(n-22);i++)
         	{
         		if(T_rxdata_user.data[16+i] == ','){
         			count = count + 1;
@@ -1770,7 +1769,7 @@ u32 gateway_proc(void)
         	xdata = atoi(rgb + len_rgb + 1) + 0x8000;
         	gateway_cmd_send(LGT_CMD_SET_RGB_VALUE, ex_param, xdata);
         }
-		else if(n > 11 && n < 15 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+ADDG", 7))){
+		else if(n > 13 && n < 17 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+ADDG", 7))){
         	uart_print("ADD group,ok\r\n");
         	ex_param[0] = 0x01;
         	xdata = atoi(((char *)T_rxdata_user.data) + 7) + 0x8000;
@@ -1778,7 +1777,7 @@ u32 gateway_proc(void)
         	ex_param[2] = (xdata & 0xff00) >> 8;
         	gateway_cmd_send(LGT_CMD_LIGHT_CONFIG_GRP, ex_param, 0xFFFF);
         }
-		else if(n > 11 && n < 15 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+DELG", 7))){
+		else if(n > 13 && n < 17 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+DELG", 7))){
         	uart_print("DEL group,ok\r\n");
         	ex_param[0] = 0x00;
         	xdata = atoi(((char *)T_rxdata_user.data) + 7) + 0x8000;
@@ -1786,17 +1785,17 @@ u32 gateway_proc(void)
         	ex_param[2] = (xdata & 0xff00) >> 8;
         	gateway_cmd_send(LGT_CMD_LIGHT_CONFIG_GRP, ex_param, 0xFFFF);
         }
-		else if(n > 13 && n < 17 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+SETLID", 9))){
+		else if(n > 15 && n < 19 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+SETLID", 9))){
         	uart_print("SET self LID,ok\r\n");
         	xdata = atoi(((char *)T_rxdata_user.data) + 9);
         	ex_param[0] = xdata & 0x00ff;
         	ex_param[1] = (xdata & 0xff00) >> 8;
         	gateway_cmd_send(LGT_CMD_CONFIG_DEV_ADDR, ex_param, 0x0000);
         }
-		else if(n > 15 && n < 23 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+LID+ADDG", 11))){
+		else if(n > 17 && n < 25 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+LID+ADDG", 11))){
         	uart_print("ADD group,ok\r\n");
         	ex_param[0] = 0x01;
-        	for(int i=0;i<(n-15);i++)
+        	for(int i=0;i<(n-17);i++)
         	{
         		if(T_rxdata_user.data[11+i] == ','){
         			LightID = atoi(lid);
@@ -1809,10 +1808,10 @@ u32 gateway_proc(void)
         	ex_param[2] = (xdata & 0xff00) >> 8;
         	gateway_cmd_send(LGT_CMD_LIGHT_CONFIG_GRP, ex_param, LightID);
         }
-		else if(n > 15 && n < 23 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+LID+DELG", 11))){
+		else if(n > 17 && n < 25 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+LID+DELG", 11))){
         	uart_print("DEL group,ok\r\n");
         	ex_param[0] = 0x00;
-        	for(int i=0;i<(n-15);i++)
+        	for(int i=0;i<(n-17);i++)
         	{
         		if(T_rxdata_user.data[11+i] == ','){
         			LightID = atoi(lid);
@@ -1825,13 +1824,13 @@ u32 gateway_proc(void)
         	ex_param[2] = (xdata & 0xff00) >> 8;
         	gateway_cmd_send(LGT_CMD_LIGHT_CONFIG_GRP, ex_param, LightID);
         }
-		else if(n > 12 && n < 16 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+RESET", 8))){
+		else if(n > 14 && n < 18 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+RESET", 8))){
         	uart_print("RESET,ok\r\n");
         	LightID = atoi(((char *)T_rxdata_user.data) + 8);
         	ex_param[0] = 0;
         	gateway_cmd_send(LGT_CMD_KICK_OUT, ex_param, LightID);
         }
-		else if((n == 13) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+ONLINE", 9))){
+		else if((n == 15) && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+ONLINE", 9))){
 			online_cmd_encode();
         }
 		else{
@@ -1839,7 +1838,6 @@ u32 gateway_proc(void)
 			{
 				buff_command[i] = T_rxdata_user.data[i];
 			}
-
 		}
 		return n;
 		T_rxdata_user.len = 0;

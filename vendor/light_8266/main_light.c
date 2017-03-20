@@ -1738,7 +1738,7 @@ void light_init_default(void){
 	
 	rf_link_slave_set_buffer (buff_response[0], 48);
 
-	rf_link_set_debug_adv_channel (38);
+//	rf_link_set_debug_adv_channel (38);
 
 	rf_link_set_max_bridge (BRIDGE_MAX_CNT);
 	vendor_id_init(VENDOR_ID);

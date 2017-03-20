@@ -38,7 +38,7 @@
 *.info_elf
 *.info_size
 *.info_symbol
-*-.lst
+*.lst
 # VIM: Temperory files
 *~
 
