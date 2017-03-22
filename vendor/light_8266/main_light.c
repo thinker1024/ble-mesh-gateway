@@ -872,8 +872,6 @@ void gateway_cmd_handle(void){
         		lid[i] = T_rxdata_user.data[13+i];
         	}
         	ex_param[0] = atoi(lid + 1 + len_lid);
-        	printf(">>>%d\r\n", LightID);
-        	printf(">>>%d\r\n", ex_param[0]);
         	gateway_light2light(LGT_CMD_LIGHT_SET, ex_param, LightID);
         }
         if(rx_len >19 && rx_len <27 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+GID+SETLUM", 13))){
@@ -887,8 +885,6 @@ void gateway_cmd_handle(void){
         		lid[i] = T_rxdata_user.data[13+i];
         	}
         	ex_param[0] = atoi(lid + 1 + len_lid);
-        	printf(">>>%d\r\n", GroupID - 0x8000);
-        	printf(">>>%d\r\n", ex_param[0]);
         	gateway_light2light(LGT_CMD_LIGHT_SET, ex_param, GroupID);
         }
         if(rx_len >16 && rx_len <20 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+SETRLUM", 10))){
@@ -914,7 +910,6 @@ void gateway_cmd_handle(void){
         	ex_param[0] = 0x01;
         	ex_param[3] = 1;
         	ex_param[4] = atoi((char *)T_rxdata_user.data + 10);
-        	printf(">>>%d",ex_param[2]);
         	gateway_light2light(LGT_CMD_LIGHT_W, ex_param, 0xFFFF);
         }
         if(rx_len >18 && rx_len <30 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+SETRGBLUM", 12))){

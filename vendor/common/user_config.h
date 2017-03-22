@@ -127,7 +127,7 @@ enum{
 #define PAIR_VALID_FLAG						0xFA
 //u8 advData[] = {0x02, 0x01, 0x05};
 //0~max_mesh_name_len bytes  (strlen(advData) + strlen(MESH_NAME) + sizeof(ll_adv_private_t))<=31
-#define MESH_NAME							"tom"
+#define MESH_NAME							"test"
 //max 16 bytes
 #define MESH_PWD							"1123"
 //max 16 bytes

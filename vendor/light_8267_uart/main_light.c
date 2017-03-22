@@ -68,6 +68,10 @@ u16			cmd_left_delay_ms = 0;
 u32 		irq_timer1_cb_time = 0;
 u32         slave_send_data = 0;
 u8 			light_off = 1;
+u8          light_w_flag = 0;
+u8          light_rgbw_flag = 1;
+u8          led_w_lum = 100;
+
 ll_packet_l2cap_data_t cmd_delay;
 
 fp_rf_led_ota_ok 			p_vendor_rf_led_ota_ok 			= 0;
@@ -176,6 +180,10 @@ void light_adjust_G(u8 val, u8 lum){
 
 void light_adjust_B(u8 val, u8 lum){
     pwm_set_lum (PWMID_B, get_pwm_cmp(val, lum), 0);
+}
+
+void light_adjust_W(u8 val, u8 lum){
+    pwm_set_lum (PWMID_W, get_pwm_cmp(val, lum), 0);
 }
 
 void light_adjust_RGB_hw(u8 val_R, u8 val_G, u8 val_B, u8 lum){
@@ -799,6 +807,8 @@ u16 light_cmd_delayed_ms(u8 data){
 			(ttc_prec == 3)? ttc_val << 8:0;
 }
 
+//TODO
+
 #if 1
 void rf_link_data_callback (u8 *p)
 {
@@ -838,16 +848,54 @@ void rf_link_data_callback (u8 *p)
         	}
 
             if(op == LGT_CMD_LIGHT_ONOFF){
-                if(params[0] == LIGHT_ON_PARAM){
+//                if(params[0] == LIGHT_ON_PARAM){
+//            		light_onoff(1);
+//        		}else if(params[0] == LIGHT_OFF_PARAM){
+//            		light_onoff(0);
+            	if(1 == light_rgbw_flag){
+            		light_adjust_W(led_w_lum, led_lum);
+            		light_w_flag = 1;
+            		light_rgbw_flag = 1;
+            	}else{
             		light_onoff(1);
-        		}else if(params[0] == LIGHT_OFF_PARAM){
-            		light_onoff(0);
+            		light_rgbw_flag = 0;
+            	}
+    		}else if(params[0] == LIGHT_OFF_PARAM){
+    			if(0 == light_off){
+    				light_rgbw_flag = 0;
+    			}else if(1 == light_w_flag){
+    				light_rgbw_flag = 1;
+    			}
+    		    if(ON_OFF_FROM_OTA == params[3]){ // only PWM off,
+    		        light_adjust_RGB(0, 0, 0, 0);
+    		        light_adjust_W(0,0);
+    		        light_w_flag = 0;
+    		    }else{
+        		    light_onoff(0);
+        		    light_adjust_W(0,0);
+        		    light_w_flag = 0;
+        		}
         		}else if(params[0] == LIGHT_SYNC_REST_PARAM){
                     #if (SYNC_TIME_EN)
                     sync_time_reset();
             		#endif
         		}
-            }
+    			else if(op == LGT_CMD_LIGHT_W){
+    				if(params[0] == 1){
+    					light_onoff(0);
+    					light_w_flag = 1;
+    					light_adjust_W(PMW_MAX_TICK_BASE, 255);
+    					if(params[3] == 1 ){
+    						led_w_lum = params[4];
+    						light_adjust_W(led_w_lum, led_lum);
+    //						lum_changed_time = clock_time();
+    					}
+    				}else if(params[0] == 0){
+    					light_adjust_W(0, 0);
+    					light_w_flag = 0;
+    				}
+    			}
+
 #if (SYNC_TIME_EN)
             else if(op == LGT_CMD_TIME_SYNC){    // don't modify, internal use
                 u16 cmd_delayed_ms = light_cmd_delayed_ms(pp->val[op_cmd_len+params_len]);
@@ -874,26 +922,56 @@ void rf_link_data_callback (u8 *p)
     			extern u8 rf_link_add_dev_addr(u16 deviceaddress);
     			rf_link_add_dev_addr(val);
         	}else if(op == LGT_CMD_LIGHT_SET){
+//        	    if(music_time){
+//        	        last_music_tick = clock_time();
+//        	    }
+//        	    if(light_off){
+//        	        return;
+//        	    }
+//        	    if(params[0] == 0xFE){
+//        	        // start music
+//        	        led_lum_tmp = led_lum;
+//        	        music_time = 1;
+//        	    }else if(params[0] == 0xFF){
+//        	        // stop music
+//        	        led_lum = led_lum_tmp;
+//        	        music_time = 0;
+//        	    }else if(params[0] > 100 || is_lum_invalid(params[0]) || led_lum == params[0]){
+//                    return;
+//                }else{
+//                    led_lum = params[0];
+//                }
+//                light_adjust_RGB(led_val[0], led_val[1], led_val[2], led_lum);
+//                if(!music_time){
+//                    lum_changed_time = clock_time();
+//                    device_status_update();
+//                }
+//            }
         	    if(music_time){
         	        last_music_tick = clock_time();
         	    }
-        	    if(light_off){
+        	    if(light_off && light_w_flag == 0){
         	        return;
         	    }
-        	    if(params[0] == 0xFE){
-        	        // start music
-        	        led_lum_tmp = led_lum;
-        	        music_time = 1;
-        	    }else if(params[0] == 0xFF){
-        	        // stop music
-        	        led_lum = led_lum_tmp;
-        	        music_time = 0;
-        	    }else if(params[0] > 100 || is_lum_invalid(params[0]) || led_lum == params[0]){
+//        	    if(params[0] == 0xFE){
+//        	        // start music
+//        	        led_lum_tmp = led_lum;
+//        	        music_time = 1;
+//        	    }else if(params[0] == 0xFF){
+//        	        // stop music
+//        	        led_lum = led_lum_tmp;
+//        	        music_time = 0;
+//        	    }else if(params[0] > 100 || is_lum_invalid(params[0]) || led_lum == params[0]){
+        	    if(params[0] > 100 || led_lum == params[0]){
                     return;
                 }else{
                     led_lum = params[0];
                 }
-                light_adjust_RGB(led_val[0], led_val[1], led_val[2], led_lum);
+        	    if(light_off == 0){
+        	    	light_adjust_RGB(led_val[0], led_val[1], led_val[2], led_lum);
+        	    }else if (light_w_flag == 1){
+        	    	light_adjust_W(PMW_MAX_TICK_BASE, led_lum);
+        	    }
                 if(!music_time){
                     lum_changed_time = clock_time();
                     device_status_update();
@@ -913,10 +991,43 @@ void rf_link_data_callback (u8 *p)
                 lum_changed_time = clock_time();
             }
         	else if (op == LGT_CMD_SET_RGB_VALUE)
+//        	{
+//        	    if(light_off){
+//        	        return;
+//        	    }
+//        		if(params[0] == 1){		        //R
+//        		    led_val[0] = params[1];
+//                    light_adjust_R (led_val[0], led_lum);
+//        		}else if(params[0] == 2){		//G
+//        		    led_val[1] = params[1];
+//                    light_adjust_G (led_val[1], led_lum);
+//        		}else if(params[0] == 3){		//B
+//        		    led_val[2] = params[1];
+//                    light_adjust_B (led_val[2], led_lum);
+//        		}else if(params[0] == 4){		//RGB
+//        		    led_val[0] = params[1];
+//        		    led_val[1] = params[2];
+//        		    led_val[2] = params[3];
+//        		    light_adjust_RGB(led_val[0], led_val[1], led_val[2], led_lum);
+//        		}else if(params[0] == 5){		//CT
+//        		    //temporary processing as brightness
+//                    if(light_off || params[1] > 100 || led_lum == params[1]){
+//                        return;
+//                    }
+//                    led_lum = params[1];
+//                    light_adjust_RGB(led_val[0], led_val[1], led_val[2], led_lum);
+//        		}
+//
+//                lum_changed_time = clock_time();
+//        	}
         	{
-        	    if(light_off){
-        	        return;
-        	    }
+//        	    if(light_off){
+//        	        return;
+//        	    }
+        		light_adjust_W(0, 0);
+        		light_w_flag = 0;
+        		light_rgbw_flag = 0;
+
         		if(params[0] == 1){		        //R
         		    led_val[0] = params[1];
                     light_adjust_R (led_val[0], led_lum);
@@ -939,7 +1050,7 @@ void rf_link_data_callback (u8 *p)
                     led_lum = params[1];
                     light_adjust_RGB(led_val[0], led_val[1], led_val[2], led_lum);
         		}
-        		
+        		light_off = 0;
                 lum_changed_time = clock_time();
         	}
         	else if (op == LGT_CMD_KICK_OUT)
@@ -1486,7 +1597,7 @@ void online_cmd_encode(void)
 	buff_command[9] = 0x00;
 	buff_command[10] = 0x01;
 }
-
+//TODO
 u32 gateway_proc(void)
 {
 	u8 ex_param[10] = {0};
@@ -1643,8 +1754,6 @@ u32 gateway_proc(void)
         		lid[i] = T_rxdata_user.data[13+i];
         	}
         	ex_param[0] = atoi(lid + 1 + len_lid);
-        	printf(">>>%d\r\n", LightID);
-        	printf(">>>%d\r\n", ex_param[0]);
         	gateway_cmd_send(LGT_CMD_LIGHT_SET, ex_param, LightID);
         }
 		else if(n > 19 && n < 27 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+GID+SETLUM", 13))){
@@ -1658,8 +1767,6 @@ u32 gateway_proc(void)
         		lid[i] = T_rxdata_user.data[13+i];
         	}
         	ex_param[0] = atoi(lid + 1 + len_lid);
-        	printf(">>>%d\r\n", GroupID - 0x8000);
-        	printf(">>>%d\r\n", ex_param[0]);
         	gateway_cmd_send(LGT_CMD_LIGHT_SET, ex_param, GroupID);
         }
 		else if(n > 16 && n < 20 && (0 == myStrCmp((char *)T_rxdata_user.data, "BT+SETRLUM", 10))){
@@ -1839,12 +1946,13 @@ u32 gateway_proc(void)
 				buff_command[i] = T_rxdata_user.data[i];
 			}
 		}
-		return n;
 		T_rxdata_user.len = 0;
 		memset(T_rxdata_user.data, '\0', sizeof(T_rxdata_user.data));
+		return n;
 	}
-	else
+	else{
 		return 0;
+	}
 }
 #endif
 
