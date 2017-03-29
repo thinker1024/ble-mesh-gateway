@@ -21,20 +21,6 @@
 
 #if UART_ENABLE
 #include "../../proj/drivers/uart.h"
-
-//#define UART_DATA_LEN    44      // data max 252
-//typedef struct{
-//    u32 len;        // data max 252
-//    u8 data[UART_DATA_LEN];
-//}uart_data_t;
-//STATIC_ASSERT((sizeof(uart_data_t) % 16) == 0);
-//
-//uart_data_t T_txdata_user;
-//uart_data_t T_txdata_buf;      // not for user
-//
-//uart_data_t T_rxdata_user;
-//uart_data_t T_rxdata_buf;   // data max 252, user must copy rxdata to other Ram,but not use directly
-//unsigned char uart_rx_true;
 #endif
 
 FLASH_ADDRESS_EXTERN;
@@ -922,46 +908,12 @@ void rf_link_data_callback (u8 *p)
     			extern u8 rf_link_add_dev_addr(u16 deviceaddress);
     			rf_link_add_dev_addr(val);
         	}else if(op == LGT_CMD_LIGHT_SET){
-//        	    if(music_time){
-//        	        last_music_tick = clock_time();
-//        	    }
-//        	    if(light_off){
-//        	        return;
-//        	    }
-//        	    if(params[0] == 0xFE){
-//        	        // start music
-//        	        led_lum_tmp = led_lum;
-//        	        music_time = 1;
-//        	    }else if(params[0] == 0xFF){
-//        	        // stop music
-//        	        led_lum = led_lum_tmp;
-//        	        music_time = 0;
-//        	    }else if(params[0] > 100 || is_lum_invalid(params[0]) || led_lum == params[0]){
-//                    return;
-//                }else{
-//                    led_lum = params[0];
-//                }
-//                light_adjust_RGB(led_val[0], led_val[1], led_val[2], led_lum);
-//                if(!music_time){
-//                    lum_changed_time = clock_time();
-//                    device_status_update();
-//                }
-//            }
         	    if(music_time){
         	        last_music_tick = clock_time();
         	    }
         	    if(light_off && light_w_flag == 0){
         	        return;
         	    }
-//        	    if(params[0] == 0xFE){
-//        	        // start music
-//        	        led_lum_tmp = led_lum;
-//        	        music_time = 1;
-//        	    }else if(params[0] == 0xFF){
-//        	        // stop music
-//        	        led_lum = led_lum_tmp;
-//        	        music_time = 0;
-//        	    }else if(params[0] > 100 || is_lum_invalid(params[0]) || led_lum == params[0]){
         	    if(params[0] > 100 || led_lum == params[0]){
                     return;
                 }else{
@@ -991,39 +943,7 @@ void rf_link_data_callback (u8 *p)
                 lum_changed_time = clock_time();
             }
         	else if (op == LGT_CMD_SET_RGB_VALUE)
-//        	{
-//        	    if(light_off){
-//        	        return;
-//        	    }
-//        		if(params[0] == 1){		        //R
-//        		    led_val[0] = params[1];
-//                    light_adjust_R (led_val[0], led_lum);
-//        		}else if(params[0] == 2){		//G
-//        		    led_val[1] = params[1];
-//                    light_adjust_G (led_val[1], led_lum);
-//        		}else if(params[0] == 3){		//B
-//        		    led_val[2] = params[1];
-//                    light_adjust_B (led_val[2], led_lum);
-//        		}else if(params[0] == 4){		//RGB
-//        		    led_val[0] = params[1];
-//        		    led_val[1] = params[2];
-//        		    led_val[2] = params[3];
-//        		    light_adjust_RGB(led_val[0], led_val[1], led_val[2], led_lum);
-//        		}else if(params[0] == 5){		//CT
-//        		    //temporary processing as brightness
-//                    if(light_off || params[1] > 100 || led_lum == params[1]){
-//                        return;
-//                    }
-//                    led_lum = params[1];
-//                    light_adjust_RGB(led_val[0], led_val[1], led_val[2], led_lum);
-//        		}
-//
-//                lum_changed_time = clock_time();
-//        	}
         	{
-//        	    if(light_off){
-//        	        return;
-//        	    }
         		light_adjust_W(0, 0);
         		light_w_flag = 0;
         		light_rgbw_flag = 0;
